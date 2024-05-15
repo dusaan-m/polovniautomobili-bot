@@ -30,6 +30,7 @@ class KPScraper:
             logger.info(f"Scraping page {page_num} finished")
 
             while await page.query_selector('.js-pagination-next'):
+                page_num += 1
                 await asyncio.sleep(15)
                 await page.click('.js-pagination-next')
                 await page.wait_for_load_state('load')
