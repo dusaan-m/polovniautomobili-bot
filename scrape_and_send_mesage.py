@@ -25,10 +25,12 @@ async def send_new_cars_message(bot: Bot, chat_id, url_to_cars, scraped_cars: se
 
         if not new_cars:
             await bot.send_message(chat_id, "Nema novih automobila")
-
-        for car in new_cars:
-            await bot.send_message(chat_id, f"{kp_link}{car}")
-            await asyncio.sleep(1)
+        else:
+            await bot.send_message(chat_id, f"Novi automobili:")
+            for car in new_cars:
+                logger.success(f"{chat_id}: {car}")
+                await bot.send_message(chat_id, f"{kp_link}{car}")
+                await asyncio.sleep(1)
 
         user_data[chat_id]["cars"] = list(new_cars | old_cars)
 
