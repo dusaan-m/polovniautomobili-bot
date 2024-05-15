@@ -12,7 +12,7 @@ API_TOKEN = os.getenv("BOT_API_TOKEN")
 
 
 async def send_welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await bot.send_message(message.chat.id, "Posalji mi link ka pretrazi kupujemprodajem")
+    await update.message.reply_text("Posalji mi link ka pretrazi kupujemprodajem")
 
 
 async def scrape_kp(update: Update, context: ContextTypes.DEFAULT_TYPE):
