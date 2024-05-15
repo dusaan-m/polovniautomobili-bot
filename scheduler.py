@@ -19,7 +19,7 @@ def re_add_jobs(bot):
         if data.get("url"):
             logger.info(f"Re-adding job for user {user_id}")
             scheduler.add_job(scrape_and_send_message, id=user_id, trigger='interval', args=[bot, user_id, data["url"]],
-                              hours=4, next_run_time=datetime.datetime.now())
+                              hours=3, next_run_time=datetime.datetime.now())
 
     logger.success("Jobs re-added")
 
@@ -30,9 +30,9 @@ def add_job(bot, chat_id, url):
     chat_id = str(chat_id)
     if scheduler.get_job(chat_id):
         logger.info(f"Removing existing job for user {chat_id}")
-        scheduler.remove_job(existing_job)
+        scheduler.remove_job(chat_id)
 
-    scheduler.add_job(scrape_and_send_message, id=chat_id, trigger='interval', args=[bot, chat_id, url], hours=4,
+    scheduler.add_job(scrape_and_send_message, id=chat_id, trigger='interval', args=[bot, chat_id, url], hours=3,
                       next_run_time=datetime.datetime.now())
 
     logger.success(f"Job added for user {chat_id}")
