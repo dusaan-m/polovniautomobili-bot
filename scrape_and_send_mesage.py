@@ -34,9 +34,8 @@ async def send_new_cars_message(bot: Bot, chat_id, url_to_cars, scraped_cars: se
 
         user_data[chat_id]["cars"] = list(new_cars | old_cars)
 
-    logger.warning(f"Data being saved: {user_data}")
     with open('users.json', 'w') as user_file:
-        json.dump(user_data, user_file)
+        json.dump(user_data, user_file, indent=4)
 
 
 async def scrape_and_send_message(bot: Bot, chat_id, url_to_cars):
