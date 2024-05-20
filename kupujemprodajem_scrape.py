@@ -20,6 +20,7 @@ class KPScraper:
         }
 
     async def scrape(self, url_to_cars: str) -> set[str]:
+        logger.info(f"Scraping started for {url_to_cars}")
         page_num = 1
         async with async_playwright() as p:
             browser = await p.firefox.launch(headless=self.headless)
