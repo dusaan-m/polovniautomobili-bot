@@ -26,13 +26,16 @@ async def scrape_kp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = User(user_id=user_id, url=url, run=True, cars=[])
         user_db.add_user(user)
 
-    scheduler.add_job(app.bot, update.message.chat.id, url)
+    scheduler.add_job(app.bot, user_id, url)
     await update.message.reply_text("Uspesno")
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"Stop command recieved from {update.message.chat.id}")
-    scheduler.scheduler.remove_job(str(update.message.chat.id))
+
+    # pause job if it exists
+    if scheduler.scheduler.get_job(str(update.message.chat.id)):
+        scheduler.scheduler.pause_job(str(update.message.chat.id))
 
     user_db.update_run(update.message.chat.id, False)
 
@@ -43,12 +46,19 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def resume(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"Resume command recieved from {update.message.chat.id}")
     user: User = user_db.get_user(update.message.chat.id)
+    user_db.update_run(user.user_id, True)
 
-    if user.url:
-        scheduler.add_job(app.bot, update.message.chat.id, user_data.get("url"), resume=True)
+    # resume job if it exists
+    if scheduler.scheduler.get_job(str(user.user_id)):
+        logger.info(f"Resuming job for user {user.user_id}")
+        scheduler.scheduler.resume_job(str(user.user_id))
         await update.message.reply_text("Uspesno")
     else:
-        await update.message.reply_text("Nemate aktivnu pretragu, posaljite link ka pretrazi kupujemprodajem")
+        if user.url:
+            scheduler.add_job(app.bot, user.user_id, user.url)
+            await update.message.reply_text("Uspesno")
+        else:
+            await update.message.reply_text("Nemate aktivnu pretragu, posaljite link ka pretrazi kupujemprodajem")
 
 
 app = ApplicationBuilder().token(API_TOKEN).build()
