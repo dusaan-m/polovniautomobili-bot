@@ -1,4 +1,4 @@
-# kupujemprodajem-bot
+# polovniautomobili-bot
 
 ## Description:
 
